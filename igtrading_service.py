@@ -44,8 +44,8 @@ class IGservice():
         """Connect to the IG service.
 
         Return:
-        response -- object returns by the authentication, includes the token
-        response2 -- object returns by the confirmation of the account
+        response -- object returned by the authentication, includes the token
+        response2 -- object returned by the confirmation of the account
         response3 -- "get accounts" object
         """
         #get security token
