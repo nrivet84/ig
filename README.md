@@ -1,12 +1,13 @@
 # ig
 
 IG REST trading API in Python
+
 [IG Labs](http://labs.ig.com/)
 
 ## Purposes:
 * trading
 * intraday
-* discrete time (non-continious = no streaming)
+* discrete time (non-continuous = no streaming)
 * decision concerning monitoring and execution supposed to be programmed in another software
 
 ## Running the tests
