@@ -32,7 +32,7 @@ igt.getconfig('demo')
 
 To create a session.
 ```python
-service=igs.IGservice(username, password, api_key, account, 'demo', proxy_user, proxy_password)
+service = igs.IGservice(username, password, api_key, account, 'demo', proxy_user, proxy_password)
 service.login()
 ```
 
