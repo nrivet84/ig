@@ -5,6 +5,7 @@
 
 import json
 import requests
+import urllib.request as req
 
 
 class IGservice():
@@ -19,7 +20,7 @@ class IGservice():
     base_header = {}
     trading_header = {}
 
-    def __init__(self, username, password, api_key, account, account_type='demo'):
+    def __init__(self, username, password, api_key, account, account_type='demo', proxy_user='', proxy_password=''):
         """Initialise the class IGservice.
 
         Keyword arguments:
@@ -39,6 +40,15 @@ class IGservice():
             raise Exception('invalid account_type: "demo" or "live"')
         self.base_header['X-IG-API-KEY'] = api_key
         self.base_header['Content-Type'] = 'application/json; charset=UTF-8'
+        #set up proxy
+        self.proxy=req.getproxies()
+        if self.proxy!='':
+            if proxy_user!='' and proxy_password!='':
+                proxy_authen = proxy_user + ':'+ proxy_password + '@'
+                for key in self.proxy:
+                    self.proxy[key] = self.proxy[key].split('//')[0] + \
+                    '//' + proxy_authen + \
+                    self.proxy[key].split('//')[1]
 
     def login(self):
         """Connect to the IG service.
@@ -55,9 +65,11 @@ class IGservice():
         api_body['password'] = self.password
         api_body['encryptedPassword'] = False
         api_header = self.base_header
+        
         response = requests.post(api_endpoint,
                                  data=json.dumps(api_body),
-                                 headers=api_header)
+                                 headers=api_header,
+                                 proxies=self.proxy)
 
         #modify trading_header according to the security token
         self.trading_header = {}
@@ -73,12 +85,14 @@ class IGservice():
         api_header = self.trading_header
         response2 = requests.put(api_endpoint,
                                  data=json.dumps(api_body),
-                                 headers=api_header)
+                                 headers=api_header,
+                                 proxies=self.proxy)
 
         #get accounts
         api_endpoint = self.url + '/accounts'
         response3 = requests.get(api_endpoint,
-                                 headers=api_header)
+                                 headers=api_header,
+                                 proxies=self.proxy)
         return response, response2, response3
 
     def get_bidask(self, instrument):
@@ -95,7 +109,7 @@ class IGservice():
         api_endpoint = api_endpoint + '/' + instrument
         api_header = self.trading_header
         api_header['Version'] = '3'
-        response = requests.get(api_endpoint, headers=api_header)
+        response = requests.get(api_endpoint, headers=api_header, proxies=self.proxy)
         market = response.json()
         bid = market['snapshot']['bid']
         ask = market['snapshot']['offer']
@@ -121,7 +135,7 @@ class IGservice():
         api_endpoint = api_endpoint + '&pageSize=' + str(max_size)
         api_header = self.trading_header
         api_header['Version'] = '3'
-        response = requests.get(api_endpoint, headers=api_header)
+        response = requests.get(api_endpoint, headers=api_header, proxies=self.proxy)
         prices = response.json()['prices']
         bid = []
         ask = []
@@ -159,7 +173,8 @@ class IGservice():
 
         response = requests.post(api_endpoint,
                                  data=json.dumps(api_body),
-                                 headers=api_header)
+                                 headers=api_header,
+                                 proxies=self.proxy)
         try:
             deal_ref = response.json()['deal_reference']
         except:
@@ -170,7 +185,8 @@ class IGservice():
         api_header = self.base_header
         api_header['Version'] = '2'
         response = requests.get(api_endpoint,
-                                headers=api_header)
+                                headers=api_header,
+                                proxies=self.proxy)
         try:
             deal_id = response.json()['deal_id']
         except:
@@ -186,7 +202,8 @@ class IGservice():
         api_header['Version'] = '2'
 
         response = requests.get(api_endpoint,
-                                headers=api_header)
+                                headers=api_header,
+                                proxies=self.proxy)
 
         output = []
         if str(response) == '<Response [405]>':
@@ -224,7 +241,8 @@ class IGservice():
 
         response = requests.post(api_endpoint,
                                  data=json.dumps(api_body),
-                                 headers=api_header)
+                                 headers=api_header,
+                                 proxies=self.proxy)
         try:
             deal_ref = response.json()['deal_reference']
         except:
