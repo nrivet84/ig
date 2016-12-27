@@ -4,8 +4,9 @@
 """
 
 import json
-import requests
 import urllib.request as req
+import requests
+
 
 
 class IGservice():
@@ -20,7 +21,8 @@ class IGservice():
     base_header = {}
     trading_header = {}
 
-    def __init__(self, username, password, api_key, account, account_type='demo', proxy_user='', proxy_password=''):
+    def __init__(self, username, password, api_key, account, account_type='demo',\
+                 proxy_user='', proxy_password=''):
         """Initialise the class IGservice.
 
         Keyword arguments:
@@ -41,9 +43,9 @@ class IGservice():
         self.base_header['X-IG-API-KEY'] = api_key
         self.base_header['Content-Type'] = 'application/json; charset=UTF-8'
         #set up proxy
-        self.proxy=req.getproxies()
-        if self.proxy!='':
-            if proxy_user!='' and proxy_password!='':
+        self.proxy = req.getproxies()
+        if self.proxy != '':
+            if proxy_user != '' and proxy_password != '':
                 proxy_authen = proxy_user + ':'+ proxy_password + '@'
                 for key in self.proxy:
                     self.proxy[key] = self.proxy[key].split('//')[0] + \
@@ -65,7 +67,7 @@ class IGservice():
         api_body['password'] = self.password
         api_body['encryptedPassword'] = False
         api_header = self.base_header
-        
+
         response = requests.post(api_endpoint,
                                  data=json.dumps(api_body),
                                  headers=api_header,
